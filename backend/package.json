@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "dotenv -e ../.env -- tsx watch src/main.ts",
+    "dev:docker": "tsx watch src/main.ts",
     "build": "tsc",
     "start": "dotenv -e ../.env -- node dist/src/main.js",
     "prisma:generate": "dotenv -e ../.env -- prisma generate",

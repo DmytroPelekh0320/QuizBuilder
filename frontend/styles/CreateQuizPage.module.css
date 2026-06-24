@@ -9,8 +9,8 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 28px;
-  color: #475569;
-  font-weight: 700;
+  color: #8fb3c9;
+  font-weight: 800;
 }
 
 .header {
@@ -19,26 +19,30 @@
 
 .eyebrow {
   margin: 0 0 8px;
-  color: #64748b;
+  color: #8fb3c9;
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
 }
 
 .header h1 {
   margin: 0;
-  color: #111827;
+  color: #f8fbff;
   font-size: 2rem;
   line-height: 1.15;
 }
 
 .notice {
+  position: sticky;
+  top: 16px;
+  z-index: 2;
   margin-bottom: 18px;
   padding: 16px;
-  border: 1px solid #fecaca;
+  border: 1px solid #b65c5c;
   border-radius: 8px;
-  color: #991b1b;
-  background: #fef2f2;
+  color: #ffd7d7;
+  background: #3c1e26;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
 }
 
 .form,
@@ -51,9 +55,9 @@
   display: grid;
   gap: 16px;
   padding: 20px;
-  border: 1px solid #d7deea;
+  border: 1px solid #29445a;
   border-radius: 8px;
-  background: #ffffff;
+  background: #162331;
 }
 
 .questionHeader {
@@ -65,7 +69,7 @@
 
 .questionHeader h2 {
   margin: 0;
-  color: #111827;
+  color: #f8fbff;
   font-size: 1.1rem;
 }
 
@@ -76,7 +80,7 @@
 
 .field span,
 .booleanGroup legend {
-  color: #334155;
+  color: #d8e4ee;
   font-size: 0.9rem;
   font-weight: 800;
 }
@@ -87,10 +91,22 @@
   width: 100%;
   min-height: 42px;
   padding: 0 12px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #3b647d;
   border-radius: 8px;
-  color: #111827;
-  background: #ffffff;
+  color: #f8fbff;
+  background: #101820;
+}
+
+.field input::placeholder,
+.optionRow > input::placeholder {
+  color: #718da2;
+}
+
+.field input:focus,
+.field select:focus,
+.optionRow > input:focus {
+  border-color: #5dd6c7;
+  outline: 2px solid rgba(93, 214, 199, 0.22);
 }
 
 .booleanGroup {
@@ -113,8 +129,13 @@
   align-items: center;
   gap: 8px;
   min-height: 42px;
-  color: #334155;
+  color: #d8e4ee;
   font-weight: 700;
+}
+
+.booleanGroup input,
+.checkField input {
+  accent-color: #5dd6c7;
 }
 
 .options {
@@ -151,27 +172,28 @@
 .primaryButton {
   min-height: 44px;
   padding: 0 18px;
-  color: #ffffff;
-  background: #2563eb;
+  color: #082f35;
+  background: #5dd6c7;
 }
 
 .secondaryButton {
   gap: 8px;
   min-height: 42px;
   padding: 0 14px;
-  color: #1d4ed8;
-  background: #dbeafe;
+  color: #dffbf7;
+  background: #17444a;
 }
 
 .iconButton {
   width: 38px;
   height: 38px;
-  color: #dc2626;
+  color: #ff8a8a;
   background: transparent;
 }
 
 .iconButton:hover:not(:disabled) {
-  background: #fee2e2;
+  color: #ffd7d7;
+  background: #4a2028;
 }
 
 .primaryButton:disabled,

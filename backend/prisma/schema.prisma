@@ -9,7 +9,7 @@ datasource db {
 
 model Quiz {
   id        String     @id @default(cuid())
-  title     String
+  title     String     @unique
   questions Question[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt

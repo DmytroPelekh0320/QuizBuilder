@@ -3,8 +3,12 @@ import { PrismaClient, QuestionType } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.quiz.create({
-    data: {
+  await prisma.quiz.upsert({
+    where: {
+      title: "JavaScript Basics"
+    },
+    update: {},
+    create: {
       title: "JavaScript Basics",
       questions: {
         create: [

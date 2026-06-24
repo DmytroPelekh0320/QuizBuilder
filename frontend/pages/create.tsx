@@ -40,8 +40,15 @@ export default function CreateQuizPage() {
 
     try {
       setError(null);
+      const validationError = getValidationError();
+
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
+
       setIsSubmitting(true);
-      const quiz = await createQuiz({
+      await createQuiz({
         title,
         questions: questions.map((question) => ({
           type: question.type,
@@ -51,9 +58,9 @@ export default function CreateQuizPage() {
         }))
       });
 
-      await router.push(`/quizzes/${quiz.id}`);
-    } catch {
-      setError("Could not create quiz. Check required fields and try again.");
+      await router.push("/quizzes");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Could not create quiz.");
     } finally {
       setIsSubmitting(false);
     }
@@ -79,6 +86,49 @@ export default function CreateQuizPage() {
             ]
           : []
     });
+  }
+
+  function getValidationError() {
+    if (!title.trim()) {
+      return "Quiz title is required.";
+    }
+
+    const emptyQuestionTextIndex = questions.findIndex((question) => !question.text.trim());
+
+    if (emptyQuestionTextIndex !== -1) {
+      return `Question ${emptyQuestionTextIndex + 1} text is required.`;
+    }
+
+    const emptyInputAnswerIndex = questions.findIndex(
+      (question) => question.type === "INPUT" && !question.correctAnswer.trim()
+    );
+
+    if (emptyInputAnswerIndex !== -1) {
+      return `Question ${emptyInputAnswerIndex + 1} answer is required.`;
+    }
+
+    const checkboxWithoutCorrectOptionIndex = questions.findIndex((question) => {
+      if (question.type !== "CHECKBOX") {
+        return false;
+      }
+
+      return !question.options.some((option) => option.isCorrect);
+    });
+
+    if (checkboxWithoutCorrectOptionIndex !== -1) {
+      return `Question ${checkboxWithoutCorrectOptionIndex + 1} must have at least one correct option.`;
+    }
+
+    const checkboxWithEmptyOptionIndex = questions.findIndex(
+      (question) =>
+        question.type === "CHECKBOX" && question.options.some((option) => !option.text.trim())
+    );
+
+    if (checkboxWithEmptyOptionIndex !== -1) {
+      return `Question ${checkboxWithEmptyOptionIndex + 1} options must not be empty.`;
+    }
+
+    return null;
   }
 
   function addQuestion() {
@@ -143,12 +193,11 @@ export default function CreateQuizPage() {
         </div>
       ) : null}
 
-      <form className={styles.form} onSubmit={(event) => void handleSubmit(event)}>
+      <form className={styles.form} noValidate onSubmit={(event) => void handleSubmit(event)}>
         <label className={styles.field}>
           <span>Quiz title</span>
           <input
             value={title}
-            required
             placeholder="JavaScript fundamentals"
             onChange={(event) => setTitle(event.target.value)}
           />
@@ -175,7 +224,6 @@ export default function CreateQuizPage() {
                 <span>Question text</span>
                 <input
                   value={question.text}
-                  required
                   placeholder="Type your question"
                   onChange={(event) => updateQuestion(questionIndex, { text: event.target.value })}
                 />
@@ -273,7 +321,6 @@ function QuestionFields({
         <span>Correct answer</span>
         <input
           value={question.correctAnswer}
-          required
           placeholder="Expected short answer"
           onChange={(event) => updateQuestion(questionIndex, { correctAnswer: event.target.value })}
         />
@@ -298,7 +345,6 @@ function QuestionFields({
 
           <input
             value={option.text}
-            required
             placeholder={`Option ${optionIndex + 1}`}
             onChange={(event) =>
               updateOption(questionIndex, optionIndex, { text: event.target.value })

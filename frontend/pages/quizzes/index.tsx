@@ -10,6 +10,7 @@ export default function QuizzesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [pendingDeleteQuiz, setPendingDeleteQuiz] = useState<QuizSummary | null>(null);
 
   useEffect(() => {
     void loadQuizzes();
@@ -27,13 +28,20 @@ export default function QuizzesPage() {
     }
   }
 
-  async function handleDelete(id: string) {
+  async function handleDelete() {
+    if (!pendingDeleteQuiz) {
+      return;
+    }
+
     try {
-      setDeletingId(id);
-      await deleteQuiz(id);
-      setQuizzes((currentQuizzes) => currentQuizzes.filter((quiz) => quiz.id !== id));
-    } catch {
-      setError("Could not delete quiz.");
+      setDeletingId(pendingDeleteQuiz.id);
+      await deleteQuiz(pendingDeleteQuiz.id);
+      setQuizzes((currentQuizzes) =>
+        currentQuizzes.filter((quiz) => quiz.id !== pendingDeleteQuiz.id)
+      );
+      setPendingDeleteQuiz(null);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Could not delete quiz.");
     } finally {
       setDeletingId(null);
     }
@@ -80,7 +88,7 @@ export default function QuizzesPage() {
                 aria-label={`Delete ${quiz.title}`}
                 title="Delete quiz"
                 disabled={deletingId === quiz.id}
-                onClick={() => void handleDelete(quiz.id)}
+                onClick={() => setPendingDeleteQuiz(quiz)}
               >
                 <Trash2 size={18} aria-hidden="true" />
               </button>
@@ -88,6 +96,41 @@ export default function QuizzesPage() {
           ))}
         </section>
       )}
+
+      {pendingDeleteQuiz ? (
+        <div className={styles.modalOverlay} role="presentation">
+          <section
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-title"
+          >
+            <h2 id="delete-title">Delete quiz</h2>
+            <p>
+              Are you sure you want to delete <strong>{pendingDeleteQuiz.title}</strong>?
+            </p>
+
+            <div className={styles.modalActions}>
+              <button
+                className={styles.cancelButton}
+                type="button"
+                disabled={deletingId === pendingDeleteQuiz.id}
+                onClick={() => setPendingDeleteQuiz(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className={styles.confirmButton}
+                type="button"
+                disabled={deletingId === pendingDeleteQuiz.id}
+                onClick={() => void handleDelete()}
+              >
+                {deletingId === pendingDeleteQuiz.id ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </section>
+        </div>
+      ) : null}
     </main>
   );
 }

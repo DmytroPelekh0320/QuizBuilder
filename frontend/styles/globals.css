@@ -1,5 +1,5 @@
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   font-family:
     Inter,
     ui-sans-serif,
@@ -8,8 +8,8 @@
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  color: #1f2937;
-  background: #f7f8fb;
+  color: #e5edf6;
+  background: #101820;
 }
 
 * {
@@ -19,7 +19,7 @@
 body {
   min-width: 320px;
   margin: 0;
-  background: #f7f8fb;
+  background: linear-gradient(180deg, rgba(25, 37, 49, 0.95) 0%, rgba(16, 24, 32, 1) 360px), #101820;
 }
 
 button,

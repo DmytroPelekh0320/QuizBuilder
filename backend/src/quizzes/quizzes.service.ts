@@ -9,10 +9,18 @@ export class QuizzesService {
 
   async create(createQuizDto: CreateQuizDto) {
     this.validateCreateQuizDto(createQuizDto);
+    const title = createQuizDto.title.trim();
+    const existingQuiz = await this.prisma.quiz.findFirst({
+      where: { title }
+    });
+
+    if (existingQuiz) {
+      throw new BadRequestException("Quiz with this title already exists");
+    }
 
     return this.prisma.quiz.create({
       data: {
-        title: createQuizDto.title.trim(),
+        title,
         questions: {
           create: createQuizDto.questions.map((question) => ({
             type: question.type,

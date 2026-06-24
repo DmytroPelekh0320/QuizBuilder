@@ -61,7 +61,14 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   });
 
   if (!response.ok) {
-    throw new Error("Request failed");
+    const errorPayload = (await response.json().catch(() => null)) as {
+      message?: string | string[];
+    } | null;
+    const message = Array.isArray(errorPayload?.message)
+      ? errorPayload.message.join(" ")
+      : errorPayload?.message;
+
+    throw new Error(message ?? "Request failed");
   }
 
   return response.json() as Promise<T>;

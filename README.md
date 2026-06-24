@@ -2,14 +2,14 @@
 
 Full-stack quiz creation app built with NestJS, Prisma, PostgreSQL, Next.js, and TypeScript.
 
-Users can create quizzes, list all available quizzes, open quiz details, and delete quizzes.
+Users can create quizzes with boolean, short input, and checkbox questions; browse all quizzes; open quiz details; and delete quizzes.
 
 ## Tech Stack
 
 - Backend: NestJS, TypeScript, Prisma
 - Database: PostgreSQL
 - Frontend: Next.js, React, TypeScript, CSS Modules
-- Tooling: ESLint, Prettier
+- Tooling: ESLint, Prettier, Docker Compose
 
 ## Project Structure
 
@@ -22,12 +22,13 @@ quiz-builder/
 │   ├── pages/
 │   ├── services/
 │   └── styles/
+├── docker-compose.yml
 └── package.json
 ```
 
 ## Environment
 
-Copy the example environment file:
+Copy the example environment file for local development:
 
 ```bash
 copy .env.example .env
@@ -36,18 +37,64 @@ copy .env.example .env
 Update `.env` if your local PostgreSQL credentials are different:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/quiz_builder?schema=public"
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/quiz_builder?schema=public
 PORT=4000
-NEXT_PUBLIC_API_URL="http://localhost:4000"
+NEXT_PUBLIC_API_URL=http://localhost:4000
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=quiz_builder
 ```
 
-## Database Setup
+`docker-compose.yml` uses `.env.example` for development defaults. The backend service overrides `DATABASE_URL` inside Docker so it can connect to the `postgres` service instead of `localhost`.
 
-Create a PostgreSQL database named:
+## Run With Docker
+
+Requirements:
+
+- Docker
+- Docker Compose
+
+Start PostgreSQL, backend, and frontend:
+
+```bash
+docker compose up --build
+```
+
+The backend container runs Prisma generate, applies migrations, seeds sample data, and starts the NestJS API.
+
+Open:
 
 ```text
-quiz_builder
+http://localhost:3000/quizzes
 ```
+
+Useful URLs:
+
+```text
+Frontend: http://localhost:3000
+Backend:  http://localhost:4000
+Health:   http://localhost:4000/health
+```
+
+Stop containers:
+
+```bash
+docker compose down
+```
+
+Stop containers and remove the PostgreSQL volume:
+
+```bash
+docker compose down -v
+```
+
+## Run Locally
+
+Requirements:
+
+- Node.js
+- PostgreSQL
+- A PostgreSQL database named `quiz_builder`
 
 Install dependencies:
 
@@ -68,31 +115,24 @@ Add sample data:
 npm run seed
 ```
 
-## Run Locally
-
 Start backend and frontend together:
 
 ```bash
 npm run dev
 ```
 
-Backend runs on:
-
-```text
-http://localhost:4000
-```
-
-Frontend runs on:
-
-```text
-http://localhost:3000
-```
-
-Useful pages:
+Open:
 
 ```text
 http://localhost:3000/quizzes
-http://localhost:3000/create
+```
+
+## App Pages
+
+```text
+/quizzes      Quiz dashboard
+/create       Quiz creation form
+/quizzes/:id  Quiz details
 ```
 
 ## API Endpoints
