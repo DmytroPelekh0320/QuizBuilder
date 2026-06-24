@@ -93,7 +93,11 @@ export default function CreateQuizPage() {
     );
   }
 
-  function updateOption(questionIndex: number, optionIndex: number, updates: Partial<OptionFormState>) {
+  function updateOption(
+    questionIndex: number,
+    optionIndex: number,
+    updates: Partial<OptionFormState>
+  ) {
     const question = questions[questionIndex];
 
     updateQuestion(questionIndex, {
@@ -181,7 +185,9 @@ export default function CreateQuizPage() {
                 <span>Question type</span>
                 <select
                   value={question.type}
-                  onChange={(event) => updateQuestionType(questionIndex, event.target.value as QuestionType)}
+                  onChange={(event) =>
+                    updateQuestionType(questionIndex, event.target.value as QuestionType)
+                  }
                 >
                   <option value="BOOLEAN">True / False</option>
                   <option value="INPUT">Short input</option>
@@ -227,7 +233,11 @@ function QuestionFields({
   question: QuestionFormState;
   questionIndex: number;
   updateQuestion: (index: number, updates: Partial<QuestionFormState>) => void;
-  updateOption: (questionIndex: number, optionIndex: number, updates: Partial<OptionFormState>) => void;
+  updateOption: (
+    questionIndex: number,
+    optionIndex: number,
+    updates: Partial<OptionFormState>
+  ) => void;
   addOption: (questionIndex: number) => void;
   removeOption: (questionIndex: number, optionIndex: number) => void;
 }) {
@@ -290,7 +300,9 @@ function QuestionFields({
             value={option.text}
             required
             placeholder={`Option ${optionIndex + 1}`}
-            onChange={(event) => updateOption(questionIndex, optionIndex, { text: event.target.value })}
+            onChange={(event) =>
+              updateOption(questionIndex, optionIndex, { text: event.target.value })
+            }
           />
 
           <button
@@ -306,7 +318,11 @@ function QuestionFields({
         </div>
       ))}
 
-      <button className={styles.secondaryButton} type="button" onClick={() => addOption(questionIndex)}>
+      <button
+        className={styles.secondaryButton}
+        type="button"
+        onClick={() => addOption(questionIndex)}
+      >
         <Plus size={18} aria-hidden="true" />
         <span>Add option</span>
       </button>

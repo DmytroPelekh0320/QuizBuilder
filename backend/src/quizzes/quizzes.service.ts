@@ -132,7 +132,9 @@ export class QuizzesService {
     const hasCorrectOption = question.options.some((option) => option.isCorrect);
 
     if (!hasCorrectOption) {
-      throw new BadRequestException(`Question ${index + 1} must contain at least one correct option`);
+      throw new BadRequestException(
+        `Question ${index + 1} must contain at least one correct option`
+      );
     }
 
     question.options.forEach((option, optionIndex) => {
