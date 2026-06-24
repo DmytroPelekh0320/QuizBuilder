@@ -2,6 +2,7 @@ import { Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { deleteQuiz, getQuizzes, QuizSummary } from "../../services/quizzes";
 import styles from "../../styles/QuizzesPage.module.css";
 
@@ -98,38 +99,15 @@ export default function QuizzesPage() {
       )}
 
       {pendingDeleteQuiz ? (
-        <div className={styles.modalOverlay} role="presentation">
-          <section
-            className={styles.modal}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="delete-title"
-          >
-            <h2 id="delete-title">Delete quiz</h2>
-            <p>
-              Are you sure you want to delete <strong>{pendingDeleteQuiz.title}</strong>?
-            </p>
-
-            <div className={styles.modalActions}>
-              <button
-                className={styles.cancelButton}
-                type="button"
-                disabled={deletingId === pendingDeleteQuiz.id}
-                onClick={() => setPendingDeleteQuiz(null)}
-              >
-                Cancel
-              </button>
-              <button
-                className={styles.confirmButton}
-                type="button"
-                disabled={deletingId === pendingDeleteQuiz.id}
-                onClick={() => void handleDelete()}
-              >
-                {deletingId === pendingDeleteQuiz.id ? "Deleting..." : "Delete"}
-              </button>
-            </div>
-          </section>
-        </div>
+        <ConfirmDialog
+          title="Delete quiz"
+          message={`Are you sure you want to delete "${pendingDeleteQuiz.title}"?`}
+          confirmLabel="Delete"
+          loadingLabel="Deleting..."
+          isLoading={deletingId === pendingDeleteQuiz.id}
+          onCancel={() => setPendingDeleteQuiz(null)}
+          onConfirm={() => void handleDelete()}
+        />
       ) : null}
     </main>
   );

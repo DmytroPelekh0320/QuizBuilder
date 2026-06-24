@@ -32,18 +32,21 @@ export default function CreateQuizPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [questions, setQuestions] = useState<QuestionFormState[]>([defaultQuestion()]);
-  const [error, setError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const validationError = hasSubmitted ? getValidationError() : null;
+  const visibleError = validationError ?? serverError;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setHasSubmitted(true);
 
     try {
-      setError(null);
-      const validationError = getValidationError();
+      setServerError(null);
+      const nextValidationError = getValidationError();
 
-      if (validationError) {
-        setError(validationError);
+      if (nextValidationError) {
         return;
       }
 
@@ -60,13 +63,14 @@ export default function CreateQuizPage() {
 
       await router.push("/quizzes");
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Could not create quiz.");
+      setServerError(error instanceof Error ? error.message : "Could not create quiz.");
     } finally {
       setIsSubmitting(false);
     }
   }
 
   function updateQuestion(index: number, updates: Partial<QuestionFormState>) {
+    setServerError(null);
     setQuestions((currentQuestions) =>
       currentQuestions.map((question, questionIndex) =>
         questionIndex === index ? { ...question, ...updates } : question
@@ -131,11 +135,33 @@ export default function CreateQuizPage() {
     return null;
   }
 
+  function isTitleInvalid() {
+    return hasSubmitted && !title.trim();
+  }
+
+  function isQuestionTextInvalid(question: QuestionFormState) {
+    return hasSubmitted && !question.text.trim();
+  }
+
+  function isInputAnswerInvalid(question: QuestionFormState) {
+    return hasSubmitted && question.type === "INPUT" && !question.correctAnswer.trim();
+  }
+
+  function isCheckboxCorrectAnswerInvalid(question: QuestionFormState) {
+    return (
+      hasSubmitted &&
+      question.type === "CHECKBOX" &&
+      !question.options.some((option) => option.isCorrect)
+    );
+  }
+
   function addQuestion() {
+    setServerError(null);
     setQuestions((currentQuestions) => [...currentQuestions, defaultQuestion()]);
   }
 
   function removeQuestion(index: number) {
+    setServerError(null);
     setQuestions((currentQuestions) =>
       currentQuestions.length === 1
         ? currentQuestions
@@ -159,6 +185,7 @@ export default function CreateQuizPage() {
 
   function addOption(questionIndex: number) {
     const question = questions[questionIndex];
+    setServerError(null);
     updateQuestion(questionIndex, {
       options: [...question.options, { text: "", isCorrect: false }]
     });
@@ -166,6 +193,7 @@ export default function CreateQuizPage() {
 
   function removeOption(questionIndex: number, optionIndex: number) {
     const question = questions[questionIndex];
+    setServerError(null);
 
     updateQuestion(questionIndex, {
       options:
@@ -187,9 +215,9 @@ export default function CreateQuizPage() {
         <h1>Create quiz</h1>
       </section>
 
-      {error ? (
+      {visibleError ? (
         <div className={styles.notice} role="alert">
-          {error}
+          {visibleError}
         </div>
       ) : null}
 
@@ -197,15 +225,29 @@ export default function CreateQuizPage() {
         <label className={styles.field}>
           <span>Quiz title</span>
           <input
+            className={isTitleInvalid() ? styles.invalidControl : undefined}
             value={title}
             placeholder="JavaScript fundamentals"
-            onChange={(event) => setTitle(event.target.value)}
+            aria-invalid={isTitleInvalid()}
+            onChange={(event) => {
+              setServerError(null);
+              setTitle(event.target.value);
+            }}
           />
         </label>
 
         <section className={styles.questions} aria-label="Questions">
           {questions.map((question, questionIndex) => (
-            <article key={questionIndex} className={styles.question}>
+            <article
+              key={questionIndex}
+              className={
+                isQuestionTextInvalid(question) ||
+                isInputAnswerInvalid(question) ||
+                isCheckboxCorrectAnswerInvalid(question)
+                  ? `${styles.question} ${styles.invalidQuestion}`
+                  : styles.question
+              }
+            >
               <div className={styles.questionHeader}>
                 <h2>Question {questionIndex + 1}</h2>
                 <button
@@ -223,8 +265,10 @@ export default function CreateQuizPage() {
               <label className={styles.field}>
                 <span>Question text</span>
                 <input
+                  className={isQuestionTextInvalid(question) ? styles.invalidControl : undefined}
                   value={question.text}
                   placeholder="Type your question"
+                  aria-invalid={isQuestionTextInvalid(question)}
                   onChange={(event) => updateQuestion(questionIndex, { text: event.target.value })}
                 />
               </label>
@@ -250,6 +294,7 @@ export default function CreateQuizPage() {
                 updateOption={updateOption}
                 addOption={addOption}
                 removeOption={removeOption}
+                hasSubmitted={hasSubmitted}
               />
             </article>
           ))}
@@ -276,7 +321,8 @@ function QuestionFields({
   updateQuestion,
   updateOption,
   addOption,
-  removeOption
+  removeOption,
+  hasSubmitted
 }: {
   question: QuestionFormState;
   questionIndex: number;
@@ -288,6 +334,7 @@ function QuestionFields({
   ) => void;
   addOption: (questionIndex: number) => void;
   removeOption: (questionIndex: number, optionIndex: number) => void;
+  hasSubmitted: boolean;
 }) {
   if (question.type === "BOOLEAN") {
     return (
@@ -320,8 +367,14 @@ function QuestionFields({
       <label className={styles.field}>
         <span>Correct answer</span>
         <input
+          className={
+            hasSubmitted && question.type === "INPUT" && !question.correctAnswer.trim()
+              ? styles.invalidControl
+              : undefined
+          }
           value={question.correctAnswer}
           placeholder="Expected short answer"
+          aria-invalid={hasSubmitted && question.type === "INPUT" && !question.correctAnswer.trim()}
           onChange={(event) => updateQuestion(questionIndex, { correctAnswer: event.target.value })}
         />
       </label>
@@ -329,7 +382,16 @@ function QuestionFields({
   }
 
   return (
-    <section className={styles.options} aria-label={`Options for question ${questionIndex + 1}`}>
+    <section
+      className={
+        hasSubmitted &&
+        (question.options.some((option) => !option.text.trim()) ||
+          !question.options.some((option) => option.isCorrect))
+          ? `${styles.options} ${styles.invalidOptions}`
+          : styles.options
+      }
+      aria-label={`Options for question ${questionIndex + 1}`}
+    >
       {question.options.map((option, optionIndex) => (
         <div key={optionIndex} className={styles.optionRow}>
           <label className={styles.checkField}>
@@ -345,7 +407,9 @@ function QuestionFields({
 
           <input
             value={option.text}
+            className={hasSubmitted && !option.text.trim() ? styles.invalidControl : undefined}
             placeholder={`Option ${optionIndex + 1}`}
+            aria-invalid={hasSubmitted && !option.text.trim()}
             onChange={(event) =>
               updateOption(questionIndex, optionIndex, { text: event.target.value })
             }

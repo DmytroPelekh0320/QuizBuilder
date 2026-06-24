@@ -60,6 +60,10 @@
   background: #162331;
 }
 
+.invalidQuestion {
+  border-color: #b65c5c;
+}
+
 .questionHeader {
   display: flex;
   align-items: center;
@@ -109,6 +113,18 @@
   outline: 2px solid rgba(93, 214, 199, 0.22);
 }
 
+.field input.invalidControl,
+.optionRow > input.invalidControl {
+  border-color: #ff8a8a;
+  background: #201923;
+}
+
+.field input.invalidControl:focus,
+.optionRow > input.invalidControl:focus {
+  border-color: #ff8a8a;
+  outline-color: rgba(255, 138, 138, 0.28);
+}
+
 .booleanGroup {
   display: flex;
   flex-wrap: wrap;
@@ -141,6 +157,13 @@
 .options {
   display: grid;
   gap: 10px;
+}
+
+.invalidOptions {
+  padding: 12px;
+  border: 1px solid #b65c5c;
+  border-radius: 8px;
+  background: #201923;
 }
 
 .optionRow {

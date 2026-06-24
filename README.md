@@ -15,15 +15,16 @@ Users can create quizzes with boolean, short input, and checkbox questions; brow
 
 ```text
 quiz-builder/
-├── backend/
-│   ├── prisma/
-│   └── src/
-├── frontend/
-│   ├── pages/
-│   ├── services/
-│   └── styles/
-├── docker-compose.yml
-└── package.json
+|-- backend/
+|   |-- prisma/
+|   `-- src/
+|-- frontend/
+|   |-- components/
+|   |-- pages/
+|   |-- services/
+|   `-- styles/
+|-- docker-compose.yml
+`-- package.json
 ```
 
 ## Environment

@@ -114,74 +114,6 @@
   opacity: 0.5;
 }
 
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: rgba(4, 9, 14, 0.72);
-}
-
-.modal {
-  width: min(100%, 420px);
-  padding: 22px;
-  border: 1px solid #3b647d;
-  border-radius: 8px;
-  background: #162331;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
-}
-
-.modal h2 {
-  margin: 0 0 10px;
-  color: #f8fbff;
-  font-size: 1.2rem;
-}
-
-.modal p {
-  margin: 0;
-  color: #b9c9d6;
-  line-height: 1.5;
-}
-
-.modal strong {
-  color: #ffffff;
-}
-
-.modalActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 22px;
-}
-
-.cancelButton,
-.confirmButton {
-  min-height: 40px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 8px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.cancelButton {
-  color: #d8e4ee;
-  background: #243647;
-}
-
-.confirmButton {
-  color: #ffd7d7;
-  background: #7f2730;
-}
-
-.cancelButton:disabled,
-.confirmButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
 @media (max-width: 640px) {
   .page {
     width: min(100% - 24px, 960px);
@@ -195,9 +127,5 @@
 
   .createButton {
     width: 100%;
-  }
-
-  .modalActions {
-    flex-direction: column-reverse;
   }
 }
