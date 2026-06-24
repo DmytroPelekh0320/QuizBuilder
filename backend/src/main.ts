@@ -1,4 +1,4 @@
-import "dotenv/config";
+import "reflect-metadata";
 
 import { NestFactory } from "@nestjs/core";
 
@@ -13,6 +13,8 @@ async function bootstrap() {
   });
 
   await app.listen(port);
+
+  console.log(`Quiz Builder API is running on http://localhost:${port}`);
 }
 
 void bootstrap();
