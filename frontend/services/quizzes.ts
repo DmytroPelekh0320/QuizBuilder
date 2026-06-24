@@ -10,6 +10,30 @@ export interface QuizSummary {
   };
 }
 
+export type QuestionType = "BOOLEAN" | "INPUT" | "CHECKBOX";
+
+export interface QuizOption {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface QuizQuestion {
+  id: string;
+  type: QuestionType;
+  text: string;
+  correctAnswer: string | null;
+  options: QuizOption[];
+}
+
+export interface QuizDetails {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  questions: QuizQuestion[];
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     headers: {
@@ -28,6 +52,10 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export function getQuizzes() {
   return request<QuizSummary[]>("/quizzes");
+}
+
+export function getQuiz(id: string) {
+  return request<QuizDetails>(`/quizzes/${id}`);
 }
 
 export async function deleteQuiz(id: string) {
