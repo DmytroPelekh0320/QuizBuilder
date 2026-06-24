@@ -34,6 +34,23 @@ export interface QuizDetails {
   questions: QuizQuestion[];
 }
 
+export interface CreateQuizOption {
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface CreateQuizQuestion {
+  type: QuestionType;
+  text: string;
+  correctAnswer?: string;
+  options?: CreateQuizOption[];
+}
+
+export interface CreateQuizPayload {
+  title: string;
+  questions: CreateQuizQuestion[];
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     headers: {
@@ -56,6 +73,13 @@ export function getQuizzes() {
 
 export function getQuiz(id: string) {
   return request<QuizDetails>(`/quizzes/${id}`);
+}
+
+export function createQuiz(payload: CreateQuizPayload) {
+  return request<QuizDetails>("/quizzes", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
 }
 
 export async function deleteQuiz(id: string) {

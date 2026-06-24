@@ -1,0 +1,205 @@
+.page {
+  width: min(100% - 32px, 960px);
+  margin: 0 auto;
+  padding: 40px 0 56px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  color: #475569;
+  font-weight: 700;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 2rem;
+  line-height: 1.15;
+}
+
+.notice {
+  margin-bottom: 18px;
+  padding: 16px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+.form,
+.questions {
+  display: grid;
+  gap: 16px;
+}
+
+.question {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #d7deea;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.questionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.questionHeader h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 1.1rem;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field span,
+.booleanGroup legend {
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.field input,
+.field select,
+.optionRow > input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #111827;
+  background: #ffffff;
+}
+
+.booleanGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.booleanGroup legend {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.booleanGroup label,
+.checkField {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  color: #334155;
+  font-weight: 700;
+}
+
+.options {
+  display: grid;
+  gap: 10px;
+}
+
+.optionRow {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) 40px;
+  align-items: center;
+  gap: 10px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.primaryButton,
+.secondaryButton,
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primaryButton {
+  min-height: 44px;
+  padding: 0 18px;
+  color: #ffffff;
+  background: #2563eb;
+}
+
+.secondaryButton {
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.iconButton {
+  width: 38px;
+  height: 38px;
+  color: #dc2626;
+  background: transparent;
+}
+
+.iconButton:hover:not(:disabled) {
+  background: #fee2e2;
+}
+
+.primaryButton:disabled,
+.iconButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (max-width: 680px) {
+  .page {
+    width: min(100% - 24px, 960px);
+    padding: 28px 0 44px;
+  }
+
+  .question {
+    padding: 16px;
+  }
+
+  .optionRow {
+    grid-template-columns: 1fr 40px;
+  }
+
+  .checkField {
+    grid-column: 1 / -1;
+  }
+
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
